@@ -8,7 +8,7 @@ utilities that are likely to be useful when building components that need to inc
 on the client-side.
 
 It provides a mechanism to derive the URLs to use to reference a file on the client side, and tools
-to add <script> and <link> tags to the document, without duplication, to load page wide assets.
+to add `<script>` and `<link>` tags to the document, without duplication, to load page wide assets.
 
 **Server Components is still in its early stages, and all of this is subject to lots of change**
 
