@@ -53,26 +53,22 @@ serverComponents.registerElement("my-component", { prototype: Element });
 
 Note that this code does not ensure that /components URLs actually resolve to the correct path
 for your component's static content on your server. Configuration to do that will depend on the
-server used.
-
-If you're using Express however, you can set this up to work automatically using the [Server-Components-Express](https://github.com/pimterry/server-components-express).
-
-Be careful if routing this by hand instead: it's important to ensure that it is not possible to read
-arbitrary files on your server, and instead only from the /static folder (by convention) for the
-relevant components.
+server used at runtime when your component is included.
 
 **When using components:**
 
-When using modules that include static content, you need to ensure your server handles the URLs they
-request and routes those requests correctly to the relevant content for that component.
+When using components that reference static content, you need to ensure your server handles the URLs
+they request and routes those requests correctly to the relevant content for that component.
 
 To do this there are a few options:
 
 * If you're using Express, [Server-Components-Express](https://github.com/pimterry/server-components-express)
 handles all of this for you. (This should be easy to write for more frameworks too, if you're interested. Get involved!)
+
 * If you're not, you can route these requests by hand. Catch requests to `/components/component-name/file-path`
 and use `serverComponentsStatic.getPath(componentName, filePath)` to get the path on disk to your
 static content.
+
 * Alternatively, you can manually copy all the static content out of your components into your existing
 static content paths, set `serverComponents.baseUrl` to point to that, and ignore the problem of routing
 requests into disparate standalone component folders entirely.
@@ -86,7 +82,7 @@ requests into disparate standalone component folders entirely.
   This can be a relative or absolute URL, and is used to calculate
   resource paths for `getUrl()` later on.
 
-  It's set to /components by default, and results in paths like:
+  It's set to /components by default, and results in URLs like:
   `/components/component-name/style.css`
 
 * `serverComponentsStatic.getUrl(componentName, filePath)`

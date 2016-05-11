@@ -12,7 +12,7 @@ var serverComponents = require("server-components");
  * This can be a relative or absolute URL, and is used to calculate
  * resource paths for getUrl() later on.
  *
- * It's set to /components by default, and results in paths like:
+ * It's set to /components by default, and results in URLs like:
  * "/components/component-name/style.css"
  */
 exports.baseUrl = "/components";
