@@ -1,5 +1,9 @@
+var path = require("path");
+
 var _ = require("lodash");
+var callsite = require("callsite");
 var urlJoin = require("url-join");
+
 var serverComponents = require("server-components");
 
 /**
@@ -19,7 +23,8 @@ exports.contentBase = "/components";
  */
 exports.forComponent = function (componentName) {
     return {
-        getUrl: (filePath) => exports.getUrl(componentName, filePath)
+        getUrl: (filePath) => exports.getUrl(componentName, filePath),
+        getPath: (filePath) => exports.getPath(componentName, filePath)
     };
 };
 
@@ -36,6 +41,38 @@ exports.getUrl = function(componentName, filePath) {
     if (filePath === undefined) throw new Error("File path required");
 
     return urlJoin(exports.contentBase, componentName, filePath);
+};
+
+// Patch registerElement to track component paths
+var componentPaths = {};
+var originalRegisterElement = serverComponents.registerElement;
+serverComponents.registerElement = function (componentName) {
+    var result = originalRegisterElement.apply(this, arguments);
+
+    // Ok, so this bit's a little crazy: we're parsing the stack to find the
+    // component registration location. Pretty neat though.
+    var componentFileName = callsite()[1].getFileName();
+    var componentDir = path.dirname(componentFileName);
+
+    componentPaths[componentName] = path.normalize(path.resolve(path.join(componentDir)));
+
+    return result;
+};
+
+exports.getPath = function(componentName, relativeFilePath) {
+    if (componentPaths[componentName] === undefined) {
+        throw new Error("Cannot get static file paths for unregistered elements");
+    }
+
+    var componentStaticPath = path.join(componentPaths[componentName], "static");
+
+    var fullFilePath = path.normalize(path.join(componentStaticPath, relativeFilePath));
+
+    if (!fullFilePath.startsWith(componentStaticPath)) {
+        throw new Error("Cannot get static file paths outside the component's static folder");
+    } else {
+        return fullFilePath;
+    }
 };
 
 function findChild(parent, matchingFunction) {
