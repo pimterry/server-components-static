@@ -4,7 +4,7 @@ var _ = require("lodash");
 var callsite = require("callsite");
 var urlJoin = require("url-join");
 
-var serverComponents = require("server-components");
+var components = require("server-components");
 
 /**
  * The base URL to use for all static content.
@@ -32,7 +32,7 @@ exports.forComponent = function (componentName) {
  * Gets the public facing URL for a file path within the given component.
  *
  * The URL returned may be relative or absolute, depending on your
- * serverComponentsStatic.baseUrl configuration.
+ * componentsStatic.baseUrl configuration.
  *
  * By default, this will be of the form '/components/component-name/file-path'.
  */
@@ -45,8 +45,8 @@ exports.getUrl = function(componentName, filePath) {
 
 // Patch registerElement to track component paths
 var componentPaths = {};
-var originalRegisterElement = serverComponents.registerElement;
-serverComponents.registerElement = function (componentName) {
+var originalRegisterElement = components.registerElement;
+components.registerElement = function (componentName) {
     var result = originalRegisterElement.apply(this, arguments);
 
     // Ok, so this bit's a little crazy: we're parsing the stack to find the
