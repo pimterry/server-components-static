@@ -1,4 +1,4 @@
-# Server Components Static
+# Server Components Static [![Travis Build Status](https://img.shields.io/travis/pimterry/server-components-static.svg)](https://travis-ci.org/pimterry/server-components-static)
 Static content handling plugin for Server Components
 
 ## Outline
