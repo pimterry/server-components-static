@@ -1,0 +1,47 @@
+{
+  "name": "server-components-static",
+  "version": "0.1.0",
+  "description": "Static content management plugin for Server Components",
+  "main": "src/index.js",
+  "scripts": {
+    "lint": "jshint . --exclude='node_modules' || exit 1",
+    "test": "npm run lint && mocha test/",
+    "dev": "watch 'npm run test -s' src/ test/",
+    "release:patch": "np patch",
+    "release:minor": "np minor",
+    "release:major": "np major"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pimterry/server-components-static.git"
+  },
+  "keywords": [
+    "webcomponents",
+    "web-components",
+    "server-components",
+    "server-components-plugin",
+    "static",
+    "static-content"
+  ],
+  "author": "Tim Perry",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/pimterry/server-components/issues"
+  },
+  "homepage": "https://github.com/pimterry/server-components#readme",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "jshint": "^2.9.2",
+    "mocha": "^2.4.5",
+    "np": "^1.2.1",
+    "watch": "^0.18.0"
+  },
+  "dependencies": {
+    "server-components": "^0.1.0",
+    "url-join": "^1.1.0"
+  },
+  "jshintConfig": {
+    "esversion": 6,
+    "node": true
+  }
+}
