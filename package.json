@@ -26,9 +26,9 @@
   "author": "Tim Perry",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/pimterry/server-components/issues"
+    "url": "https://github.com/pimterry/server-components-static/issues"
   },
-  "homepage": "https://github.com/pimterry/server-components#readme",
+  "homepage": "https://github.com/pimterry/server-components-static#readme",
   "devDependencies": {
     "chai": "^3.5.0",
     "jshint": "^2.9.2",
