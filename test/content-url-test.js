@@ -5,7 +5,7 @@ var serverComponentsStatic = require("../src/index.js");
 
 describe("Server Component Static urls", () => {
     it("set an initial base content path when first used", () => {
-        expect(serverComponentsStatic.contentBase).to.equal("/components");
+        expect(serverComponentsStatic.baseUrl).to.equal("/components");
     });
 
     it("lets components look up their own content URL", () => {
@@ -16,7 +16,7 @@ describe("Server Component Static urls", () => {
     });
 
     it("allows changes to the component URL base", () => {
-        serverComponentsStatic.contentBase = "/custom-path";
+        serverComponentsStatic.baseUrl = "/custom-path";
         var content = serverComponentsStatic.forComponent("my-component");
         var url = content.getUrl("style.css");
 
@@ -24,7 +24,7 @@ describe("Server Component Static urls", () => {
     });
 
     it("correctly uses remote base component URLs", () => {
-        serverComponentsStatic.contentBase = "http://my-cdn.example.com/components/";
+        serverComponentsStatic.baseUrl = "http://my-cdn.example.com/components/";
         var content = serverComponentsStatic.forComponent("my-component");
         var url = content.getUrl("script.js");
 
