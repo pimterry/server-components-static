@@ -1,3 +1,4 @@
+var _ = require("lodash");
 var urlJoin = require("url-join");
 var serverComponents = require("server-components");
 
@@ -35,4 +36,38 @@ exports.getUrl = function(componentName, filePath) {
     if (filePath === undefined) throw new Error("File path required");
 
     return urlJoin(exports.contentBase, componentName, filePath);
+};
+
+function findChild(parent, matchingFunction) {
+    return _.find(parent.childNodes, matchingFunction);
+}
+
+exports.includeScript = function(document, scriptUrl) {
+    var headElement = document.querySelector("head");
+
+    var isScriptElementForUrl = (node) => {
+        return node.tagName === "SCRIPT" && node.getAttribute("src") === scriptUrl;
+    };
+
+    if (!findChild(headElement, isScriptElementForUrl)) {
+        var newScriptElement = document.createElement("script");
+        newScriptElement.setAttribute("type", "text/javascript");
+        newScriptElement.setAttribute("src", scriptUrl);
+        headElement.appendChild(newScriptElement);
+    }
+};
+
+exports.includeCSS = function(document, cssUrl) {
+    var headElement = document.querySelector("head");
+
+    var isLinkElementForUrl = (node) => {
+        return node.tagName === "LINK" && node.getAttribute("href") === cssUrl;
+    };
+
+    if (!findChild(headElement, isLinkElementForUrl)) {
+        var newLinkElement = document.createElement("link");
+        newLinkElement.setAttribute("rel", "stylesheet");
+        newLinkElement.setAttribute("href", cssUrl);
+        headElement.appendChild(newLinkElement);
+    }
 };
