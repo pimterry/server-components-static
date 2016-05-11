@@ -35,7 +35,7 @@ Element.createdCallback = function () {
 serverComponents.registerElement("my-component", { prototype: Element });
 ```
 
-`serverComponents.render("<html><body><my-component></my-component></body></html")` then returns:
+`serverComponents.render("<html><body><my-component></my-component></body></html>")` then returns:
 
 ```html
 <html>
