@@ -42,6 +42,13 @@ function findChild(parent, matchingFunction) {
     return _.find(parent.childNodes, matchingFunction);
 }
 
+/**
+ * Ensures the given document includes a script tag in its head loading the
+ * given URL. If not already present, the tag will be appended to the head.
+ *
+ * If already present, this is a no-op; exactly matching URLs will not be
+ * duplicated.
+ */
 exports.includeScript = function(document, scriptUrl) {
     var headElement = document.querySelector("head");
 
@@ -57,6 +64,13 @@ exports.includeScript = function(document, scriptUrl) {
     }
 };
 
+/**
+ * Ensures the given document includes a link in its head loading CSS from
+ * the given URL. If not already present, the tag will be appended to the head.
+ *
+ * If already present, this is a no-op; exactly matching URLs will not be
+ * duplicated.
+ */
 exports.includeCSS = function(document, cssUrl) {
     var headElement = document.querySelector("head");
 
