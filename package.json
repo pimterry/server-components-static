@@ -1,6 +1,6 @@
 {
   "name": "server-components-static",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Static content management plugin for Server Components",
   "main": "src/index.js",
   "scripts": {
