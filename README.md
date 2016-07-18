@@ -12,23 +12,26 @@ to add `<script>` and `<link>` tags to the document, without duplication, to loa
 
 **Server Components is still in its early stages, and all of this is subject to lots of change**
 
-## Basic Usage
+## Normal Usage
 
-**In a component:**
+**When writing a component:**
 
 ```javascript
 var components = require("server-components");
+var componentsStatic = require("server-components-static");
 
-var componentsStatic = require("./src/index.js"); // TODO
-var staticContent = componentsStatic.forComponent("my-component");
+// Set the root path for your component's static content
+var myContent = componentsStatic.forComponent("my-component");
+myContent.setPath(__dirname, 'public');
 
 var Element = components.newElement();
 Element.createdCallback = function () {
-    componentsStatic.includeCSS(this.ownerDocument, staticContent.getUrl("styles.css"));
-    componentsStatic.includeScript(this.ownerDocument, staticContent.getUrl("my-script.js"));
+    // Include your static content, using content.getUrl to obtain URL mappings for it
+    componentsStatic.includeCSS(this.ownerDocument, myContent.getUrl("styles.css"));
+    componentsStatic.includeScript(this.ownerDocument, myContent.getUrl("my-script.js"));
 
     var image = this.ownerDocument.createElement("img");
-    image.src = staticContent.getUrl("my-image.png");
+    image.src = myContent.getUrl("my-image.png");
     this.appendChild(image);
 };
 
@@ -51,9 +54,9 @@ components.registerElement("my-component", { prototype: Element });
 </html>
 ```
 
-Note that this code does not ensure that /components URLs actually resolve to the correct path
-for your component's static content on your server. Configuration to do that will depend on the
-server used at runtime when your component is included.
+Note that this code doesn't ensure /components/* URLs resolve back to the correct path for your
+component's static content on your server. Configuration to do that will depend on the server used
+at runtime when your component is included; see 'when using components' below.
 
 **When using components:**
 
@@ -92,30 +95,32 @@ requests into disparate standalone component folders entirely.
 
   By default, this will be of the form '/components/component-name/file-path'.
 
-* `componentsStatic.getPath(componentName, filePath)`
+* `componentsStatic.setPath(componentName, filePath)`
 
-  Returns the absolute path on disk to static content that is at `filePath`, relative to the
-  definition of the component with name `componentName`.
+  Sets the root path for the given component name. Later calls to getPath will be relative to this
+  path
 
-  Currently this is always `filePath` relative to the component's `static` folder, which is expected
-  to be in the same location as the script file that registers the component.
+* `componentsStatic.getPath(componentName, filePath, [...more path parts])`
 
-  For example, if `/project-root/node_modules/my-component-a-package/index.js` registers
-  'component-a', then `componentsgetPath('component-a', 'style.css')` will return
-  `/project-root/node_modules/my-package/static/style.css`.
+  Returns the absolute path on disk to static content that for the concatenated paths specified,
+  relative to the definition of the component with name `componentName`.
 
-  In future this location will be configurable per-component. If you just call this method though,
-  you don't need to care about that.
+  For example, if you call `componentsStatic.setPath("my-component", "/path/my-component", "public")`
+  then `components.getPath('my-component', 'style.css')` will return
+  `/path/my-component/public/style.css`.
+
+  `getPath()` ensures that no paths outside the configured file path for this component are ever returned.
 
 * `componentsStatic.for(componentName)`
 
   Convenience method to curry the first argument to getUrl and getPath. This returns an object with
-  getUrl and getPath methods method identical to the ones above, but not needing the first argument.
+  getUrl, setPath and getPath methods method identical to the ones above, but not needing the first argument.
 
   A useful pattern is:
 
   ```javascript
   var staticContent = componentsStatic.for("my-custom-element");
+  staticContent.setPath(__dirname, "static");
 
   ...
 
