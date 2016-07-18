@@ -21,9 +21,9 @@ exports.baseUrl = "/components";
  */
 exports.forComponent = function (componentName) {
     return {
-        getUrl: (filePath) => exports.getUrl(componentName, filePath),
-        getPath: (filePath) => exports.getPath(componentName, filePath),
-        setPath: (filePath) => exports.setPath(componentName, filePath)
+        getUrl: exports.getUrl.bind(null, componentName),
+        getPath: exports.getPath.bind(null, componentName),
+        setPath: exports.setPath.bind(null, componentName)
     };
 };
 
@@ -43,8 +43,9 @@ exports.getUrl = function(componentName, filePath) {
 };
 
 var componentPaths = {};
-exports.setPath = function (componentName, rootStaticFilePath) {
-    componentPaths[componentName] = path.resolve(rootStaticFilePath);
+exports.setPath = function (componentName, rootStaticFilePath /* , ...more parts */) {
+    var pathParts = [].slice.call(arguments, 1);
+    componentPaths[componentName] = path.resolve.apply(null, pathParts);
 };
 
 exports.getPath = function(componentName, relativeFilePath /* , ...more parts */) {

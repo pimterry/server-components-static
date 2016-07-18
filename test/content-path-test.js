@@ -41,6 +41,11 @@ describe("Server Component Static path lookup", () => {
         });
     });
 
+    it("can be set with multiple parts", () => {
+        componentsStatic.forComponent("multipart-component").setPath("/a", "b");
+        expect(componentsStatic.getPath("multipart-component", "c.txt")).to.equal("/a/b/c.txt");
+    });
+
     it("does not allow you to find content for unregistered elements", () => {
         expect(() => {
             componentsStatic.getPath("nonexistent-element", "style.css");
