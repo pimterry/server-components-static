@@ -1,10 +1,8 @@
 var path = require("path");
+var isPathInside = require("path-is-inside");
 
 var _ = require("lodash");
-var callsite = require("callsite");
 var urlJoin = require("url-join");
-
-var components = require("server-components");
 
 /**
  * The base URL to use for all static content.
@@ -24,7 +22,8 @@ exports.baseUrl = "/components";
 exports.forComponent = function (componentName) {
     return {
         getUrl: (filePath) => exports.getUrl(componentName, filePath),
-        getPath: (filePath) => exports.getPath(componentName, filePath)
+        getPath: (filePath) => exports.getPath(componentName, filePath),
+        setPath: (filePath) => exports.setPath(componentName, filePath)
     };
 };
 
@@ -43,20 +42,9 @@ exports.getUrl = function(componentName, filePath) {
     return urlJoin(exports.baseUrl, componentName, filePath);
 };
 
-// Patch registerElement to track component paths
 var componentPaths = {};
-var originalRegisterElement = components.registerElement;
-components.registerElement = function (componentName) {
-    var result = originalRegisterElement.apply(this, arguments);
-
-    // Ok, so this bit's a little crazy: we're parsing the stack to find the
-    // component registration location. Pretty neat though.
-    var componentFileName = callsite()[1].getFileName();
-    var componentDir = path.dirname(componentFileName);
-
-    componentPaths[componentName] = path.normalize(path.resolve(path.join(componentDir)));
-
-    return result;
+exports.setPath = function (componentName, rootStaticFilePath) {
+    componentPaths[componentName] = path.resolve(rootStaticFilePath);
 };
 
 exports.getPath = function(componentName, relativeFilePath) {
@@ -64,12 +52,11 @@ exports.getPath = function(componentName, relativeFilePath) {
         throw new Error("Cannot get static file paths for unregistered elements");
     }
 
-    var componentStaticPath = path.join(componentPaths[componentName], "static");
+    var componentRootPath = componentPaths[componentName];
+    var fullFilePath = path.normalize(path.join(componentRootPath, relativeFilePath));
 
-    var fullFilePath = path.normalize(path.join(componentStaticPath, relativeFilePath));
-
-    if (!fullFilePath.startsWith(componentStaticPath)) {
-        throw new Error("Cannot get static file paths outside the component's static folder");
+    if (!isPathInside(fullFilePath, componentRootPath) || fullFilePath === componentRootPath) {
+        throw new Error("Cannot get static file paths outside the component's configured folder");
     } else {
         return fullFilePath;
     }
