@@ -47,13 +47,14 @@ exports.setPath = function (componentName, rootStaticFilePath) {
     componentPaths[componentName] = path.resolve(rootStaticFilePath);
 };
 
-exports.getPath = function(componentName, relativeFilePath) {
+exports.getPath = function(componentName, relativeFilePath /* , ...more parts */) {
     if (componentPaths[componentName] === undefined) {
         throw new Error("Cannot get static file paths for unregistered elements");
     }
 
     var componentRootPath = componentPaths[componentName];
-    var fullFilePath = path.normalize(path.join(componentRootPath, relativeFilePath));
+    var pathParts = [componentRootPath].concat([].slice.call(arguments, 1));
+    var fullFilePath = path.normalize(path.join.apply(null, pathParts));
 
     if (!isPathInside(fullFilePath, componentRootPath) || fullFilePath === componentRootPath) {
         throw new Error("Cannot get static file paths outside the component's configured folder");

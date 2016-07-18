@@ -18,6 +18,16 @@ describe("Server Component Static path lookup", () => {
             expect(filepath).to.equal(path.join(__dirname, "style.css"));
         });
 
+        it("should accept multiple parts pre-concatenated", () => {
+            var filepath = componentsStatic.getPath("test-component", "css/style.css");
+            expect(filepath).to.equal(path.join(__dirname, "css", "style.css"));
+        });
+
+        it("should accept multiple path parts as separate arguments", () => {
+            var filepath = componentsStatic.getPath("test-component", "css", "style.css");
+            expect(filepath).to.equal(path.join(__dirname, "css", "style.css"));
+        });
+
         it("does not allow you to escape the static root", () => {
             expect(() => {
                 componentsStatic.getPath("test-component", "../etc/passwd");
